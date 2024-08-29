@@ -1,5 +1,7 @@
 // scripts.js
 
+// scripts.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const actionSelect = document.getElementById('action-select');
     const writeTextSection = document.getElementById('write-text-section');
@@ -8,30 +10,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDataSection = document.getElementById('input-data-section');
     const figureLegendSection = document.getElementById('figure-legend-section');
 
-    const numRowsInput = document.getElementById('num-rows');
-    const createDataTableBtn = document.getElementById('create-data-table');
-    const dataTableSection = document.getElementById('data-table-section');
-    const dataTableBody = document.querySelector('#data-table tbody');
-    const csvUpload = document.getElementById('csv-upload');
-    const pasteData = document.getElementById('paste-data');
-    const plotDataBtn = document.getElementById('plot-data-btn');
-    const chartContainer = document.getElementById('chart-container');
-
-    const figureUpload = document.getElementById('figure-upload');
-    const uploadedFigureDiv = document.getElementById('uploaded-figure');
-    const fileUpload = document.getElementById('file-upload');
-    const uploadedFilesDiv = document.getElementById('uploaded-files');
+    // Initially hide all sections
+    hideAllSections();
 
     actionSelect.addEventListener('change', () => {
         const selectedOptions = Array.from(actionSelect.selectedOptions).map(option => option.value);
 
+        hideAllSections();
+
         // Toggle sections based on selected actions
-        writeTextSection.classList.toggle('hidden', !selectedOptions.includes('write-text'));
-        uploadFigureSection.classList.toggle('hidden', !selectedOptions.includes('upload-figure'));
-        uploadFileSection.classList.toggle('hidden', !selectedOptions.includes('upload-file'));
-        inputDataSection.classList.toggle('hidden', !selectedOptions.includes('input-data'));
-        figureLegendSection.classList.toggle('hidden', selectedOptions.length === 0);
+        selectedOptions.forEach(option => {
+            switch(option) {
+                case 'write-text':
+                    writeTextSection.classList.remove('hidden');
+                    figureLegendSection.classList.remove('hidden');
+                    break;
+                case 'upload-figure':
+                    uploadFigureSection.classList.remove('hidden');
+                    figureLegendSection.classList.remove('hidden');
+                    break;
+                case 'upload-file':
+                    uploadFileSection.classList.remove('hidden');
+                    figureLegendSection.classList.remove('hidden');
+                    break;
+                case 'input-data':
+                    inputDataSection.classList.remove('hidden');
+                    figureLegendSection.classList.remove('hidden');
+                    break;
+                default:
+                    hideAllSections();
+            }
+        });
     });
+
+    // Function to hide all sections initially
+    function hideAllSections() {
+        writeTextSection.classList.add('hidden');
+        uploadFigureSection.classList.add('hidden');
+        uploadFileSection.classList.add('hidden');
+        inputDataSection.classList.add('hidden');
+        figureLegendSection.classList.add('hidden');
+    }
+
+    // Handle other functionalities like figure upload, file upload, data input, etc.
+    // The rest of the code remains the same.
+});
+
 
     // Handle figure upload
     figureUpload.addEventListener('change', () => {
