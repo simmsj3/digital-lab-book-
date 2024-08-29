@@ -1,7 +1,5 @@
 // scripts.js
 
-// scripts.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const actionSelect = document.getElementById('action-select');
     const writeTextSection = document.getElementById('write-text-section');
@@ -10,8 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDataSection = document.getElementById('input-data-section');
     const figureLegendSection = document.getElementById('figure-legend-section');
 
-    // Initially hide all sections
-    hideAllSections();
+    const dataInputMethod = document.getElementById('data-input-method');
+    const manualDataEntrySection = document.getElementById('manual-data-entry-section');
+    const csvUploadSection = document.getElementById('csv-upload-section');
+    const pasteDataSection = document.getElementById('paste-data-section');
+    const plotOptionsSection = document.getElementById('plot-options-section');
+    const chartContainer = document.getElementById('chart-container');
+
+    const numRowsInput = document.getElementById('num-rows');
+    const createDataTableBtn = document.getElementById('create-data-table');
+    const dataTableSection = document.getElementById('data-table-section');
+    const dataTableBody = document.querySelector('#data-table tbody');
+    const csvUpload = document.getElementById('csv-upload');
+    const pasteData = document.getElementById('paste-data');
+    const plotDataBtn = document.getElementById('plot-data-btn');
+    const plotTypeSelect = document.getElementById('plot-type');
+
+    const figureUpload = document.getElementById('figure-upload');
+    const uploadedFigureDiv = document.getElementById('uploaded-figure');
+    const fileUpload = document.getElementById('file-upload');
+    const uploadedFilesDiv = document.getElementById('uploaded-files');
 
     actionSelect.addEventListener('change', () => {
         const selectedOptions = Array.from(actionSelect.selectedOptions).map(option => option.value);
@@ -43,19 +59,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Function to hide all sections initially
-    function hideAllSections() {
-        writeTextSection.classList.add('hidden');
-        uploadFigureSection.classList.add('hidden');
-        uploadFileSection.classList.add('hidden');
-        inputDataSection.classList.add('hidden');
-        figureLegendSection.classList.add('hidden');
-    }
+    dataInputMethod.addEventListener('change', () => {
+        const method = dataInputMethod.value;
 
-    // Handle other functionalities like figure upload, file upload, data input, etc.
-    // The rest of the code remains the same.
-});
+        manualDataEntrySection.classList.add('hidden');
+        csvUploadSection.classList.add('hidden');
+        pasteDataSection.classList.add('hidden');
+        plotOptionsSection.classList.add('hidden');
+        chartContainer.innerHTML = '';
 
+        if (method === 'manual') {
+            manualDataEntrySection.classList.remove('hidden');
+        } else if (method === 'csv') {
+            csvUploadSection.classList.remove('hidden');
+        } else if (method === 'paste') {
+            pasteDataSection.classList.remove('hidden');
+        }
+    });
 
     // Handle figure upload
     figureUpload.addEventListener('change', () => {
@@ -105,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         dataTableSection.classList.remove('hidden');
+        plotOptionsSection.classList.remove('hidden');
     });
 
     // Handle CSV Upload
@@ -114,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const reader = new FileReader();
             reader.onload = (event) => {
                 const csvData = event.target.result;
-                const rows = csvData.split('\n').map(row => row.split(',').map(Number));
+                const rows = csvData.trim().split('\n').map(row => row.split(',').map(Number));
                 populateDataTable(rows);
             };
             reader.readAsText(file);
@@ -142,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dataTableBody.appendChild(tr);
         });
         dataTableSection.classList.remove('hidden');
+        plotOptionsSection.classList.remove('hidden');
     }
 
     // Plot Data
@@ -155,21 +177,24 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         });
 
-        plotChart(data, col1Header, col2Header);
+        const plotType = plotTypeSelect.value;
+
+        plotChart(data, col1Header, col2Header, plotType);
     });
 
-    function plotChart(data, xLabel, yLabel) {
+    function plotChart(data, xLabel, yLabel, type) {
         chartContainer.innerHTML = ''; // Clear previous chart
 
         const canvas = document.createElement('canvas');
         chartContainer.appendChild(canvas);
 
         new Chart(canvas, {
-            type: 'scatter',
+            type: type,
             data: {
+                labels: data.map((_, i) => `Point ${i + 1}`),
                 datasets: [{
                     label: 'Data',
-                    data: data,
+                    data: data.map(point => type === 'scatter' ? point : point.y),
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 }]
@@ -183,4 +208,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Function to hide all sections initially
+    function hideAllSections() {
+        writeTextSection.classList.add('hidden');
+        uploadFigureSection.classList.add('hidden');
+        uploadFileSection.classList.add('hidden');
+        inputDataSection.classList.add('hidden');
+        figureLegendSection.classList.add('hidden');
+        manualDataEntrySection.classList.add('hidden');
+        csvUploadSection.classList.add('hidden');
+        pasteDataSection.classList.add('hidden');
+        plotOptionsSection.classList.add('hidden');
+        dataTableSection.classList.add('hidden');
+    }
+
+    hideAllSections(); // Initialize the sections to be hidden
 });
