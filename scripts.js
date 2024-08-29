@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileUpload = document.getElementById('file-upload');
     const uploadedFilesDiv = document.getElementById('uploaded-files');
 
+    // Hide all sections initially
+    hideAllSections();
+
+    // Event listener for action selection
     actionSelect.addEventListener('change', () => {
         const selectedOptions = Array.from(actionSelect.selectedOptions).map(option => option.value);
 
@@ -59,21 +63,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Event listener for data input method selection
     dataInputMethod.addEventListener('change', () => {
         const method = dataInputMethod.value;
 
+        // Hide all data input sections initially
         manualDataEntrySection.classList.add('hidden');
         csvUploadSection.classList.add('hidden');
         pasteDataSection.classList.add('hidden');
         plotOptionsSection.classList.add('hidden');
         chartContainer.innerHTML = '';
 
-        if (method === 'manual') {
-            manualDataEntrySection.classList.remove('hidden');
-        } else if (method === 'csv') {
-            csvUploadSection.classList.remove('hidden');
-        } else if (method === 'paste') {
-            pasteDataSection.classList.remove('hidden');
+        // Show the relevant section based on selected input method
+        switch(method) {
+            case 'manual':
+                manualDataEntrySection.classList.remove('hidden');
+                break;
+            case 'csv':
+                csvUploadSection.classList.remove('hidden');
+                break;
+            case 'paste':
+                pasteDataSection.classList.remove('hidden');
+                break;
+            default:
+                console.log("No valid method selected");
         }
     });
 
@@ -189,9 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         chartContainer.appendChild(canvas);
 
         new Chart(canvas, {
-            type: type,
+            type: type === 'histogram' ? 'bar' : type,  // Use 'bar' for histogram, but change its options later
             data: {
-                labels: data.map((_, i) => `Point ${i + 1}`),
+                labels: type === 'scatter' ? data.map((_, i) => `Point ${i + 1}`) : data.map(point => point.x),
                 datasets: [{
                     label: 'Data',
                     data: data.map(point => type === 'scatter' ? point : point.y),
@@ -204,7 +217,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 scales: {
                     x: { display: true, title: { display: true, text: xLabel || 'X-axis' } },
                     y: { display: true, title: { display: true, text: yLabel || 'Y-axis' } },
-                }
+                },
+                ...(type === 'histogram' && {
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            type: 'linear',
+                            title: { display: true, text: xLabel || 'X-axis' },
+                        },
+                        y: { beginAtZero: true, title: { display: true, text: yLabel || 'Y-axis' } }
+                    }
+                })
             }
         });
     }
@@ -222,6 +245,4 @@ document.addEventListener('DOMContentLoaded', () => {
         plotOptionsSection.classList.add('hidden');
         dataTableSection.classList.add('hidden');
     }
-
-    hideAllSections(); // Initialize the sections to be hidden
 });
