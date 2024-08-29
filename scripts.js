@@ -1,19 +1,50 @@
 // scripts.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    const fileUpload = document.getElementById('file-upload');
-    const uploadedFilesDiv = document.getElementById('uploaded-files');
-    const dataInput = document.getElementById('data-input');
+    const actionSelect = document.getElementById('action-select');
+    const writeTextSection = document.getElementById('write-text-section');
+    const uploadFigureSection = document.getElementById('upload-figure-section');
+    const uploadFileSection = document.getElementById('upload-file-section');
+    const inputDataSection = document.getElementById('input-data-section');
+    const figureLegendSection = document.getElementById('figure-legend-section');
+
+    const numRowsInput = document.getElementById('num-rows');
+    const createDataTableBtn = document.getElementById('create-data-table');
+    const dataTableSection = document.getElementById('data-table-section');
+    const dataTableBody = document.querySelector('#data-table tbody');
+    const csvUpload = document.getElementById('csv-upload');
+    const pasteData = document.getElementById('paste-data');
     const plotDataBtn = document.getElementById('plot-data-btn');
     const chartContainer = document.getElementById('chart-container');
-    const textEditor = document.getElementById('text-editor');
-    const figureLegend = document.getElementById('figure-legend');
-    const saveBtn = document.getElementById('save-btn');
 
-    const fileCheckbox = document.getElementById('file-checkbox');
-    const chartCheckbox = document.getElementById('chart-checkbox');
-    const textCheckbox = document.getElementById('text-checkbox');
-    const legendCheckbox = document.getElementById('legend-checkbox');
+    const figureUpload = document.getElementById('figure-upload');
+    const uploadedFigureDiv = document.getElementById('uploaded-figure');
+    const fileUpload = document.getElementById('file-upload');
+    const uploadedFilesDiv = document.getElementById('uploaded-files');
+
+    actionSelect.addEventListener('change', () => {
+        const selectedOptions = Array.from(actionSelect.selectedOptions).map(option => option.value);
+
+        // Toggle sections based on selected actions
+        writeTextSection.classList.toggle('hidden', !selectedOptions.includes('write-text'));
+        uploadFigureSection.classList.toggle('hidden', !selectedOptions.includes('upload-figure'));
+        uploadFileSection.classList.toggle('hidden', !selectedOptions.includes('upload-file'));
+        inputDataSection.classList.toggle('hidden', !selectedOptions.includes('input-data'));
+        figureLegendSection.classList.toggle('hidden', selectedOptions.length === 0);
+    });
+
+    // Handle figure upload
+    figureUpload.addEventListener('change', () => {
+        const file = figureUpload.files[0];
+        if (file) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.alt = 'Uploaded Figure';
+            img.style.maxWidth = '100%';
+            uploadedFigureDiv.innerHTML = '';
+            uploadedFigureDiv.appendChild(img);
+        }
+    });
 
     // Handle file upload
     fileUpload.addEventListener('change', () => {
@@ -25,33 +56,93 @@ document.addEventListener('DOMContentLoaded', () => {
             fileElement.textContent = file.name;
             uploadedFilesDiv.appendChild(fileElement);
         });
-
-        fileCheckbox.checked = files.length > 0;
     });
 
-    // Handle data plotting
-    plotDataBtn.addEventListener('click', () => {
-        const data = dataInput.value.split(',').map(Number);
+    // Create data table based on number of rows
+    createDataTableBtn.addEventListener('click', () => {
+        const numRows = parseInt(numRowsInput.value, 10);
+        dataTableBody.innerHTML = '';
 
-        if (data.length > 0 && !isNaN(data[0])) {
-            plotChart(data);
-            chartCheckbox.checked = true;
-        } else {
-            alert('Please enter valid comma-separated numerical data.');
+        for (let i = 0; i < numRows; i++) {
+            const row = document.createElement('tr');
+            const cell1 = document.createElement('td');
+            const cell2 = document.createElement('td');
+            const input1 = document.createElement('input');
+            const input2 = document.createElement('input');
+
+            input1.type = 'number';
+            input2.type = 'number';
+
+            cell1.appendChild(input1);
+            cell2.appendChild(input2);
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            dataTableBody.appendChild(row);
+        }
+
+        dataTableSection.classList.remove('hidden');
+    });
+
+    // Handle CSV Upload
+    csvUpload.addEventListener('change', () => {
+        const file = csvUpload.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const csvData = event.target.result;
+                const rows = csvData.split('\n').map(row => row.split(',').map(Number));
+                populateDataTable(rows);
+            };
+            reader.readAsText(file);
         }
     });
 
-    // Plot a simple line chart
-    function plotChart(data) {
+    // Handle Paste Data
+    pasteData.addEventListener('input', () => {
+        const rows = pasteData.value.trim().split('\n').map(row => row.split('\t').map(Number));
+        populateDataTable(rows);
+    });
+
+    function populateDataTable(rows) {
+        dataTableBody.innerHTML = '';
+        rows.forEach(row => {
+            const tr = document.createElement('tr');
+            row.forEach(value => {
+                const td = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.value = value;
+                td.appendChild(input);
+                tr.appendChild(td);
+            });
+            dataTableBody.appendChild(tr);
+        });
+        dataTableSection.classList.remove('hidden');
+    }
+
+    // Plot Data
+    plotDataBtn.addEventListener('click', () => {
+        const col1Header = document.getElementById('col1-header').value;
+        const col2Header = document.getElementById('col2-header').value;
+        const data = Array.from(dataTableBody.rows).map(row => {
+            return {
+                x: parseFloat(row.cells[0].querySelector('input').value),
+                y: parseFloat(row.cells[1].querySelector('input').value),
+            };
+        });
+
+        plotChart(data, col1Header, col2Header);
+    });
+
+    function plotChart(data, xLabel, yLabel) {
         chartContainer.innerHTML = ''; // Clear previous chart
 
         const canvas = document.createElement('canvas');
         chartContainer.appendChild(canvas);
 
         new Chart(canvas, {
-            type: 'line',
+            type: 'scatter',
             data: {
-                labels: data.map((_, i) => `Point ${i + 1}`),
                 datasets: [{
                     label: 'Data',
                     data: data,
@@ -62,29 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
             options: {
                 responsive: true,
                 scales: {
-                    x: { display: true, title: { display: true, text: 'Data Points' } },
-                    y: { display: true, title: { display: true, text: 'Value' } },
+                    x: { display: true, title: { display: true, text: xLabel || 'X-axis' } },
+                    y: { display: true, title: { display: true, text: yLabel || 'Y-axis' } },
                 }
             }
         });
     }
-
-    // Handle text editor input
-    textEditor.addEventListener('input', () => {
-        textCheckbox.checked = textEditor.value.trim().length > 0;
-    });
-
-    // Handle figure legend input
-    figureLegend.addEventListener('input', () => {
-        legendCheckbox.checked = figureLegend.value.trim().length > 0;
-    });
-
-    // Handle save button
-    saveBtn.addEventListener('click', () => {
-        if (fileCheckbox.checked && chartCheckbox.checked && textCheckbox.checked && legendCheckbox.checked) {
-            alert('Lab page saved successfully!');
-        } else {
-            alert('Please complete all sections before saving.');
-        }
-    });
 });
