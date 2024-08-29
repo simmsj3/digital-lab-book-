@@ -46,28 +46,52 @@
         <!-- Input Data Section -->
         <section id="input-data-section" class="hidden">
             <h2>Input Data</h2>
-            <label for="num-rows">Number of Rows:</label>
-            <input type="number" id="num-rows" min="1" value="2">
-            <button id="create-data-table">Create Data Table</button>
+            <label for="data-input-method">Choose Data Input Method:</label>
+            <select id="data-input-method">
+                <option value="" disabled selected>Select an option</option>
+                <option value="manual">Enter Data Manually</option>
+                <option value="csv">Upload CSV</option>
+                <option value="paste">Paste from Excel</option>
+            </select>
 
-            <div id="data-table-section" class="hidden">
-                <table id="data-table">
-                    <thead>
-                        <tr>
-                            <th><input type="text" id="col1-header" placeholder="X-axis label"></th>
-                            <th><input type="text" id="col2-header" placeholder="Y-axis label"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data rows will be added here -->
-                    </tbody>
-                </table>
+            <div id="manual-data-entry-section" class="hidden">
+                <label for="num-rows">Number of Rows:</label>
+                <input type="number" id="num-rows" min="1" value="2">
+                <button id="create-data-table">Create Data Table</button>
 
-                <h3>Or Upload CSV Data:</h3>
+                <div id="data-table-section" class="hidden">
+                    <table id="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="text" id="col1-header" placeholder="X-axis label"></th>
+                                <th><input type="text" id="col2-header" placeholder="Y-axis label"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="csv-upload-section" class="hidden">
+                <h3>Upload CSV Data:</h3>
                 <input type="file" id="csv-upload" accept=".csv">
-                <h3>Or Paste Data from Spreadsheet:</h3>
-                <textarea id="paste-data" placeholder="Paste data here..."></textarea>
+            </div>
 
+            <div id="paste-data-section" class="hidden">
+                <h3>Paste Data from Spreadsheet:</h3>
+                <textarea id="paste-data" placeholder="Paste data here..."></textarea>
+            </div>
+
+            <div id="plot-options-section" class="hidden">
+                <h3>Choose Plot Type:</h3>
+                <select id="plot-type">
+                    <option value="scatter">Scatter</option>
+                    <option value="line">Line</option>
+                    <option value="bar">Bar</option>
+                    <option value="histogram">Histogram</option>
+                </select>
                 <button id="plot-data-btn">Plot Data</button>
             </div>
 
