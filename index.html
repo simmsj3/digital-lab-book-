@@ -13,35 +13,70 @@
     </header>
 
     <main>
-        <section id="file-upload-section">
-            <h2>Upload Files</h2>
-            <input type="file" id="file-upload" multiple>
-            <div id="uploaded-files"></div>
+        <section id="dropdown-section">
+            <label for="action-select">Choose an action:</label>
+            <select id="action-select" multiple>
+                <option value="write-text">Write Text</option>
+                <option value="upload-figure">Upload Figure/Picture</option>
+                <option value="upload-file">Upload File</option>
+                <option value="input-data">Input Data</option>
+            </select>
         </section>
 
-        <section id="data-input-section">
-            <h2>Enter Data</h2>
-            <textarea id="data-input" placeholder="Enter data as comma-separated values..."></textarea>
-            <button id="plot-data-btn">Plot Data</button>
-            <div id="chart-container"></div>
-        </section>
-
-        <section id="text-editor-section">
+        <!-- Write Text Section -->
+        <section id="write-text-section" class="hidden">
             <h2>Text Annotations</h2>
             <textarea id="text-editor" placeholder="Add your notes here..."></textarea>
         </section>
 
-        <section id="figure-legend-section">
-            <h2>Figure Legend</h2>
-            <input type="text" id="figure-legend" placeholder="Enter figure legend...">
+        <!-- Upload Figure Section -->
+        <section id="upload-figure-section" class="hidden">
+            <h2>Upload Figure/Picture</h2>
+            <input type="file" id="figure-upload" accept="image/*">
+            <div id="uploaded-figure"></div>
         </section>
 
-        <section id="checklist-section">
-            <h2>Checklist</h2>
-            <label><input type="checkbox" id="file-checkbox"> Upload at least one file</label><br>
-            <label><input type="checkbox" id="chart-checkbox"> Generate a chart</label><br>
-            <label><input type="checkbox" id="text-checkbox"> Add text annotations</label><br>
-            <label><input type="checkbox" id="legend-checkbox"> Add a figure legend</label><br>
+        <!-- Upload File Section -->
+        <section id="upload-file-section" class="hidden">
+            <h2>Upload File</h2>
+            <input type="file" id="file-upload">
+            <div id="uploaded-files"></div>
+        </section>
+
+        <!-- Input Data Section -->
+        <section id="input-data-section" class="hidden">
+            <h2>Input Data</h2>
+            <label for="num-rows">Number of Rows:</label>
+            <input type="number" id="num-rows" min="1" value="2">
+            <button id="create-data-table">Create Data Table</button>
+
+            <div id="data-table-section" class="hidden">
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th><input type="text" id="col1-header" placeholder="X-axis label"></th>
+                            <th><input type="text" id="col2-header" placeholder="Y-axis label"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data rows will be added here -->
+                    </tbody>
+                </table>
+
+                <h3>Or Upload CSV Data:</h3>
+                <input type="file" id="csv-upload" accept=".csv">
+                <h3>Or Paste Data from Spreadsheet:</h3>
+                <textarea id="paste-data" placeholder="Paste data here..."></textarea>
+
+                <button id="plot-data-btn">Plot Data</button>
+            </div>
+
+            <div id="chart-container"></div>
+        </section>
+
+        <section id="figure-legend-section" class="hidden">
+            <h2>Figure Legend</h2>
+            <input type="text" id="figure-legend" placeholder="Enter figure legend...">
         </section>
 
         <button id="save-btn">Save Lab Page</button>
