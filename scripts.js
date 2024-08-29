@@ -58,17 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 case 'input-data':
                     inputDataSection.classList.remove('hidden');
+                    figureLegendSection.classList.remove('hidden');
+                    experimentSummarySection.classList.remove('hidden');
+                    saveBtn.classList.remove('hidden');
                     break;
                 default:
                     hideAllSections();
             }
         });
-
-        if (selectedOptions.includes('input-data')) {
-            figureLegendSection.classList.remove('hidden');
-            experimentSummarySection.classList.remove('hidden');
-            saveBtn.classList.remove('hidden');
-        }
     });
 
     // Event listener for data input method selection
@@ -256,12 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.classList.add('hidden');
     }
 
-    // Enable figure legend textarea after all checks are ticked
+    // Enable save button if all checklist items are checked
     legendChecks.forEach(check => {
         check.addEventListener('change', () => {
             const allChecked = Array.from(legendChecks).every(check => check.checked);
-            figureLegendTextarea.disabled = !allChecked;
-            experimentSummaryTextarea.disabled = !allChecked;
             saveBtn.disabled = !allChecked;
         });
     });
