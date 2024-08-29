@@ -98,12 +98,32 @@
             <div id="chart-container"></div>
         </section>
 
+        <!-- Figure Legend Section with Checklist -->
         <section id="figure-legend-section" class="hidden">
             <h2>Figure Legend</h2>
-            <input type="text" id="figure-legend" placeholder="Enter figure legend...">
+
+            <p>Please ensure the following are included in your figure legend:</p>
+            <ul>
+                <li><label><input type="checkbox" class="legend-check" data-check="1"> Figure Number and Title</label></li>
+                <li><label><input type="checkbox" class="legend-check" data-check="2"> Relevant experimental conditions or treatments</label></li>
+                <li><label><input type="checkbox" class="legend-check" data-check="3"> Explanation of data representation (axes, units, error bars)</label></li>
+                <li><label><input type="checkbox" class="legend-check" data-check="4"> Explanation of colors or symbols used</label></li>
+                <li><label><input type="checkbox" class="legend-check" data-check="5"> Statistical information if applicable (e.g., how many times an experiment was performed)</label></li>
+                <li><label><input type="checkbox" class="legend-check" data-check="6"> Scale information for images if relevant</label></li>
+                <li><label><input type="checkbox" class="legend-check" data-check="7"> Definition of any abbreviations used</label></li>
+            </ul>
+
+            <textarea id="figure-legend" placeholder="Enter figure legend..." disabled></textarea>
         </section>
 
-        <button id="save-btn">Save Lab Page</button>
+        <!-- Experiment Summary Section -->
+        <section id="experiment-summary-section" class="hidden">
+            <h2>Experiment Summary</h2>
+            <p>Briefly describe what the experiment was, the main findings, and reference the figure by its number.</p>
+            <textarea id="experiment-summary" placeholder="Summarize the experiment here..."></textarea>
+        </section>
+
+        <button id="save-btn" class="hidden">Save Lab Page</button>
     </main>
 
     <footer>
