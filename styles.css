@@ -29,31 +29,20 @@ h2 {
     color: #4CAF50;
 }
 
-input[type="file"] {
-    margin-bottom: 10px;
-}
-
-#uploaded-files {
-    margin-top: 10px;
-}
-
-textarea {
+input[type="file"],
+input[type="text"],
+input[type="number"],
+textarea,
+select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: vertical;
 }
 
-#chart-container {
-    margin-top: 20px;
-}
-
-#save-btn {
-    display: block;
-    width: 100%;
-    padding: 10px;
+button {
+    padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -62,8 +51,16 @@ textarea {
     font-size: 16px;
 }
 
-#save-btn:hover {
+button:hover {
     background-color: #45a049;
+}
+
+#chart-container {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
 }
 
 footer {
