@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadFileSection = document.getElementById('upload-file-section');
     const inputDataSection = document.getElementById('input-data-section');
     const figureLegendSection = document.getElementById('figure-legend-section');
+    const experimentSummarySection = document.getElementById('experiment-summary-section');
 
     const dataInputMethod = document.getElementById('data-input-method');
     const manualDataEntrySection = document.getElementById('manual-data-entry-section');
@@ -29,6 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileUpload = document.getElementById('file-upload');
     const uploadedFilesDiv = document.getElementById('uploaded-files');
 
+    const figureLegendTextarea = document.getElementById('figure-legend');
+    const experimentSummaryTextarea = document.getElementById('experiment-summary');
+    const saveBtn = document.getElementById('save-btn');
+    const legendChecks = document.querySelectorAll('.legend-check');
+
     // Hide all sections initially
     hideAllSections();
 
@@ -43,24 +49,26 @@ document.addEventListener('DOMContentLoaded', () => {
             switch(option) {
                 case 'write-text':
                     writeTextSection.classList.remove('hidden');
-                    figureLegendSection.classList.remove('hidden');
                     break;
                 case 'upload-figure':
                     uploadFigureSection.classList.remove('hidden');
-                    figureLegendSection.classList.remove('hidden');
                     break;
                 case 'upload-file':
                     uploadFileSection.classList.remove('hidden');
-                    figureLegendSection.classList.remove('hidden');
                     break;
                 case 'input-data':
                     inputDataSection.classList.remove('hidden');
-                    figureLegendSection.classList.remove('hidden');
                     break;
                 default:
                     hideAllSections();
             }
         });
+
+        if (selectedOptions.includes('input-data')) {
+            figureLegendSection.classList.remove('hidden');
+            experimentSummarySection.classList.remove('hidden');
+            saveBtn.classList.remove('hidden');
+        }
     });
 
     // Event listener for data input method selection
@@ -239,10 +247,24 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadFileSection.classList.add('hidden');
         inputDataSection.classList.add('hidden');
         figureLegendSection.classList.add('hidden');
+        experimentSummarySection.classList.add('hidden');
         manualDataEntrySection.classList.add('hidden');
         csvUploadSection.classList.add('hidden');
         pasteDataSection.classList.add('hidden');
         plotOptionsSection.classList.add('hidden');
         dataTableSection.classList.add('hidden');
+        saveBtn.classList.add('hidden');
     }
+
+    // Enable figure legend textarea after all checks are ticked
+    legendChecks.forEach(check => {
+        check.addEventListener('change', () => {
+            const allChecked = Array.from(legendChecks).every(check => check.checked);
+            figureLegendTextarea.disabled = !allChecked;
+            experimentSummaryTextarea.disabled = !allChecked;
+            saveBtn.disabled = !allChecked;
+        });
+    });
+
+    hideAllSections(); // Initialize the sections to be hidden
 });
