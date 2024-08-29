@@ -41,6 +41,11 @@ select {
     border-radius: 4px;
 }
 
+textarea:disabled {
+    background-color: #f9f9f9;
+    color: #888;
+}
+
 button {
     padding: 10px 20px;
     background-color: #4CAF50;
